@@ -143,7 +143,8 @@ var enableGestures = function() {
 
       if (eventStart === 'mousedown') {
         touch.el = parentIfText(e.target)
-        if (e.target.nodeName === 'ripple') {
+        // For Android ripple effect:
+        if (e.target.nodeName === 'ripple' || /ripple/img.test(e.target.className)) {
           touch.el = el.target.parentNode
         }
         touchTimeout && clearTimeout(touchTimeout)
