@@ -1,15 +1,3 @@
-function uuid() {
-  var d = Date.now();
-  d += performance.now();
-  var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
-  var randomLetter = charset[Math.floor(Math.random() * charset.length)];
-  return randomLetter + 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'.replace(/[x]/g, function(c) {
-    var r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-  });
-}
-
 var eventCache = []
 
 function bind(options) {
