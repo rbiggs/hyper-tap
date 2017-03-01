@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestures</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section>
+    <h1>Gestures</h1>
+    <h3>1. Tap Gesture</h3>
+    <p>
+      <button id='btn'>You need to Click</button>
+    </p>
+    <h3>2. Swipe Right Gesture</h3>
+    <h4>Choose a fruit by clicking on it:</h4>
+    <ul id='list'>
+      <li>Apple</li>
+      <li>Orange</li>
+      <li>Banana</li>
+      <li>Strawberry</li>
+      <li>Melon</li>
+    </ul>
+    <p>You chose: <span id="result"></span></p>
+  </section>
+  <script src="../src/gestures.js"></script>
+  <script>
+    var btn = document.querySelector('#btn');
+    createGesture({
+      type: 'tap', 
+      element: '#btn', 
+      callback: function(e) {
+        alert('Hello!')
+      }
+    })
+    createGesture({
+      type: 'swiperight', 
+      root: '#list',
+      callback: function() {
+        result.textContent = this.textContent
+      },
+      element: 'li'
+    })
+    enableGestures()
+  </script>
+</body>
+</html>

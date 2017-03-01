@@ -32,3 +32,7 @@ Hyper-tap has three global functions:
 * bind - Define events to bind
 * bindEvents - Execute to init events at load time
 * unBindEvent - Use to unbind an event
+
+Gestures
+========
+Hyper-tap offers the following gestures: `tap`, `dbltap`, `longtap`, `swipeup`, `swipedown`, `swipeleft`, `swiperight`. To set them up, use the `createGesture` method. When done you can init them at load time with `enableGestures()`.
