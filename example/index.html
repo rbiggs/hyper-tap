@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Events and Event Delegation</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font: normal 11pt/1.345 Sans-serif;
+    }
+    section {
+      margin: 1rem;
+      border: solid 1px #ccc;
+      padding: 20px;
+      max-width: 400px;
+    }
+    h1 {
+      margin: 0;
+    }
+    ul {
+      margin: 0;
+      padding: 0;
+      border: solid 1px #ccc;
+      max-width: 200px;
+    }
+    li {
+      -webkit-user-select: none;
+      user-select: none;
+      cursor: pointer;
+      border-bottom: solid 1px #ccc;
+      list-style: none;
+      padding: 5px 10px;
+    }
+    li:hover {
+      background-color: #666;
+      color: #fff;
+    }
+    li:last-of-type {
+      border: none;
+    }
+    h3 {
+      border-bottom: solid 1px #ccc;
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <h1>Events and Event Delegation</h1>
+    <h3>1. Normal Event Registration</h3>
+    <p>
+      <button id='btn'>You need to Click</button>
+    </p>
+    <h3>2. Event Delegation</h3>
+    <h4>Choose a fruit by clicking on it:</h4>
+    <ul id='list'>
+      <li>Apple</li>
+      <li>Orange</li>
+      <li>Banana</li>
+      <li>Strawberry</li>
+      <li>Melon</li>
+    </ul>
+    <p>You chose: <span id="result"></span></p>
+  </section>
+  <script src="../src/events.js"></script>
+  <script>
+    var btn = document.querySelector('#btn');
+    bind([
+      {
+        event: 'click',
+        element: '#btn',
+        callback: function(e) {
+          alert('Hello!')
+        }
+      },
+      {
+        event: 'click',
+        element: '#list',
+        targetEl: 'li',
+        callback: function() {
+          result.textContent = this.textContent
+        }
+      }
+    ])
+    bindEvents()
+  </script>
+</body>
+</html>

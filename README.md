@@ -27,3 +27,8 @@ So, How do I use this?
 
 Simple, first define your events, then init them when the DOM loads.
 
+Hyper-tap has three global functions:
+
+* bind - Define events to bind
+* bindEvents - Execute to init events at load time
+* unBindEvent - Use to unbind an event
