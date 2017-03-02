@@ -66,13 +66,3 @@ h4 {
 h3 {
   border-bottom: solid 1px #ccc;
 }
-@media only screen and (min-width: 800px) {
-  button:hover {
-    background-color: #ddd;
-    color: #000;
-  }
-  li:hover {
-    background-color: #666;
-    color: #fff;
-  }
-}
