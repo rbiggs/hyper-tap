@@ -1,0 +1,29 @@
+{
+  "name": "hyper-tap",
+  "version": "0.0.3",
+  "description": "An events and gesture library for frameworks that use inline events.",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "''"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rbiggs/hyper-tap.git"
+  },
+  "keywords": [
+    "javascript",
+    "hyperx",
+    "hyperscript",
+    "virtual-dom",
+    "hyperapp"
+  ],
+  "author": "Robert Biggs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rbiggs/hyper-tap/issues"
+  },
+  "homepage": "https://github.com/rbiggs/hyper-tap#readme"
+}
