@@ -1,6 +1,6 @@
 var eventCache = []
 
-function bind(options) {
+function defineEvents(options) {
   if (Array.isArray(options)) {
     options.forEach(function(event) {
       eventCache.push(event)
@@ -69,6 +69,6 @@ function unBindEvent(target, event, callback) {
   }
 }
 
-window.bind = bind
+window.defineEvents = defineEvents
 window.bindEvents = bindEvents
 window.unBindEvent = unBindEvent

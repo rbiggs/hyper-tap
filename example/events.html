@@ -14,7 +14,7 @@
     <h1>Events and Event Delegation</h1>
     <h3>1. Normal Event Registration</h3>
     <p>
-      <button id='btn'>You need to Click</button>
+      <button id='btn'>Click This</button>
     </p>
     <h3>2. Event Delegation</h3>
     <h4>Choose a fruit by clicking on it:</h4>
@@ -30,12 +30,12 @@
   <script src="../src/events.js"></script>
   <script>
     var btn = document.querySelector('#btn');
-    bind([
+    defineEvents([
       {
         event: 'click',
         element: '#btn',
         callback: function(e) {
-          alert('Hello!')
+          alert('Hello! You clicked?')
         }
       },
       {
