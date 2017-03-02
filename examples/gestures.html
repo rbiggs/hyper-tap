@@ -49,6 +49,7 @@
     var tapResult = document.querySelector('#tap')
     var dblTapResult = document.querySelector('#dbltap')
     var longTapResult = document.querySelector('#longtap')
+
     defineEvents([{
         event: 'tap',
         element: '#btn1',
@@ -83,6 +84,11 @@
         targetEl: 'li',
         callback: function() {
           result.textContent = this.textContent
+          var self = this
+          this.classList.add('selected')
+          setTimeout(function() {
+            self.classList.remove('selected')
+          }, 1000)
         }
       },
       ])

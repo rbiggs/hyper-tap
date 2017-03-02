@@ -224,7 +224,7 @@ var enableGestures = function() {
         }
       }
 
-      if (delta > 0 && delta <= 250) {
+      if (delta > 0 && delta <= 450) {
         touch.isDoubleTap = true
       }
       touch.last = now
@@ -286,6 +286,7 @@ var enableGestures = function() {
             if (touch && touch.isDoubleTap) {
               if (touch && touch.el) {
                 trigger(touch.el, 'doubletap')
+                e.preventDefault();
                 touch = {}
               }
 
