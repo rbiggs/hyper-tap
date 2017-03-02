@@ -1,0 +1,15 @@
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Misc
+node_modules
+_Store
+._*
+*.tgz
+.Spotlight-V100
+.Trashes
+Thumbs.db
