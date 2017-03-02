@@ -4,6 +4,17 @@ html, body {
   height: 100%;
   font: normal 11pt/1.345 Sans-serif;
 }
+button {
+  padding: 10px 30px;
+  border: solid 1px #ccc;
+  background-color: #eee;
+  border-radius: 4px;
+}
+button:hover,
+button:active {
+  background-color: #ddd;
+  color: #000;
+}
 li, button {
   -webkit-user-select: none;
   -moz-user-select: none;
