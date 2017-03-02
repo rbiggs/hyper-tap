@@ -1,13 +1,14 @@
 {
   "name": "hyper-tap",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "An events and gesture library for frameworks that use inline events.",
   "main": "index.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
-    "test": "''"
+    "test": "",
+    "build": "rollup  -cm -n events -f umd -i src/events.js -o dist/events.js"
   },
   "repository": {
     "type": "git",

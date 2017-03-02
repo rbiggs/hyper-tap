@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="user-scalable=1.0">
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -12,9 +13,21 @@
 <body>
   <section>
     <h1>Gestures</h1>
-    <h3>1. Tap Gesture</h3>
+    <h2>Tap Gestures</h3>
+    <h4>1. Tap:</h4>
     <p>
-      <button id='btn'>Tap This</button>
+      <button id='btn1'>Tap This</button>
+      <span id='tap'></span>
+    </p>
+    <h4>2. Double Tap:</h4>
+    <p>
+      <button id='btn2'>Double Tap This</button>
+      <span id='dbltap'></span>
+    </p>
+    <h4>3. Long Tap:</h4>
+    <p>
+      <button id='btn3'>Tap &amp; Hold This</button>
+      <span id='longtap'></span>
     </p>
     <h3>2. Swipe Right Gesture</h3>
     <h4>Choose a fruit by swiping right on it:</h4>
@@ -27,25 +40,53 @@
     </ul>
     <p>You chose: <span id="result"></span></p>
   </section>
-  <script src="../src/gestures.js"></script>
+  <script src="../dist/events.js"></script>
   <script>
-    var btn = document.querySelector('#btn');
-    createGesture({
-      type: 'tap', 
-      element: '#btn', 
-      callback: function(e) {
-        alert('Hello! You tapped?')
-      }
-    })
-    createGesture({
-      type: 'swiperight', 
-      root: '#list',
-      callback: function() {
-        result.textContent = this.textContent
+    var defineEvents = events.defineEvents
+    var bindEvents = events.bindEvents
+    var unbind = events.unbind
+
+    var tapResult = document.querySelector('#tap')
+    var dblTapResult = document.querySelector('#dbltap')
+    var longTapResult = document.querySelector('#longtap')
+    defineEvents([{
+        event: 'tap',
+        element: '#btn1',
+        callback: function() {
+          tapResult.textContent = 'You tapped!'
+          setTimeout(function() {
+            tapResult.textContent = ''
+          }, 1000)
+        }
+      },{
+        event: 'doubletap',
+        element: '#btn2',
+        callback: function() {
+          dblTapResult.textContent = 'You double tapped!'
+          setTimeout(function() {
+            dblTapResult.textContent = ''
+          }, 1000)
+        }
+      },{
+        event: 'longtap',
+        element: '#btn3',
+        callback: function() {
+          longTapResult.textContent = 'You long tapped!'
+          setTimeout(function() {
+            longTapResult.textContent = ''
+          }, 1000)
+        }
       },
-      element: 'li'
-    })
-    enableGestures()
+      {
+        event: 'swiperight',
+        element: '#list',
+        targetEl: 'li',
+        callback: function() {
+          result.textContent = this.textContent
+        }
+      },
+      ])
+    bindEvents()
   </script>
 </body>
 </html>

@@ -4,6 +4,12 @@ html, body {
   height: 100%;
   font: normal 11pt/1.345 Sans-serif;
 }
+li, button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 section {
   margin: 1rem;
   border: solid 1px #ccc;
@@ -33,6 +39,9 @@ li:hover {
 }
 li:last-of-type {
   border: none;
+}
+h4 {
+  margin: 0;
 }
 h3 {
   border-bottom: solid 1px #ccc;

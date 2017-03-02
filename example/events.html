@@ -27,8 +27,11 @@
     </ul>
     <p>You chose: <span id="result"></span></p>
   </section>
-  <script src="../src/events.js"></script>
+  <script src="../dist/events.js"></script>
   <script>
+    var defineEvents = events.defineEvents
+    var bindEvents = events.bindEvents
+    var unbind = events.unbind
     var btn = document.querySelector('#btn');
     defineEvents([
       {
