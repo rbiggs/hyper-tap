@@ -277,6 +277,8 @@ function clickListItem(model, e) {
 }
 ```
 
+Below is an example of a Hyperapp app with hyper-tap events:
+
 ```js
 const h = hyperapp.h
 const app = hyperapp.app
