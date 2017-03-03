@@ -343,13 +343,13 @@ app({
       defineEvents([
         {
           element: '#btn',
-          event: 'click',
+          event: 'tap',
           callback: saySomething.bind(this, model)
         },
         {
           element: '#list',
           targetEl: 'li',
-          event: 'click',
+          event: 'swiperight',
           callback: clickListItem.bind(this, model)
         }
       ])
