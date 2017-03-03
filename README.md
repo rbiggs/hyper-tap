@@ -129,6 +129,7 @@ defineEvents([{
   element: '#myBtn',
   event: 'tap',
   callback: function(e) {
+    // Access data property of event:
     alert('Hello, ' + e.data.name + '!')
   }
 }])
