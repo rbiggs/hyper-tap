@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "",
-    "build": "rollup  -cm -n events -f umd -i src/events.js -o dist/events.js"
+    "build": "rollup -cm -n events -f umd -i src/events.js -o dist/events.js"
   },
   "repository": {
     "type": "git",

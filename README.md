@@ -227,9 +227,132 @@ bindEvents()
 trigger('#myBtn', 'tap', {name: 'Joe'})
 ```
 
-About Designating Element for Event
------------------------------------
+About Designating an Element for Event
+--------------------------------------
 
 It's always best to use a CSS selector that is specific to the element you wish to bind the event to. Using selectors that are generic like "p", "a", "div", "ul" can be problematic because there will probably be many instances of these in your app. Hyper-tap uses `document.querySelector` to convert a CSS selector into a node reference. This means it finds the first occurence only. If you do really want to bind an event to multiple instances of a selector, look at using a delegated event. Bind the event to the parent and provide the generic selector as the target element:
 
+Using Hyper-tap with Hyperapp
+-----------------------------
+You can use hyper-tap with Hyperapp to get gestures. It easy, just include the event file in your app. Because hyper-tap needs to initialize things when the page loads, you want to set up your events and gestures using Hyperapp's `subscriptions` object. Define your events inside inside a function in your app's `subscriptions` property. To pass Hyperapp's model and actions reference to your callbacks, use bind when defining your events inside you Hyperapp code to pass a reference to Hyperapp's `model` and `actions` properties:
 
+```js
+  subscriptions: [
+    (model, actions) => {
+      defineEvents([
+        {
+          element: '#btn',
+          event: 'click',
+          callback: saySomething.bind(this, model, actions)
+        }
+      ])
+```
+
+After doing the above, inside your `saySomething` callback you can access the model and actions like this:
+
+```js
+// Define named functions as callbacks:
+function saySomething(model, actions, e) {
+  console.dir(model.people)
+  var num = model.people.length
+  console.log('The number of people is: ' + num + '.')
+}
+```
+
+Please note, when you bind the model and actions to your callback, you loose the direct reference to the event target through the `this` keyword. However you can still access it through the event:
+
+```js
+function clickListItem(model, e) {
+  // Get the id of the element tapped on:
+  var id = e.target.id
+  var choice = model.people.filter(function(person) {
+    return person.id === id;
+  })[0]
+  document.querySelector('#result').textContent = choice.name
+  e.target.classList.add('selected')
+  setTimeout(function() {
+    e.target.classList.remove('selected')
+    document.querySelector('#result').textContent = ''
+  }, 500)
+}
+```
+
+```js
+const h = hyperapp.h
+const app = hyperapp.app
+const html = hyperx(h)
+const defineEvents = events.defineEvents
+const bindEvents = events.bindEvents
+
+// Define named functions as callbacks:
+function saySomething(model, e) {
+  console.dir(model.people)
+  const num = model.people.length
+  console.log('The number of people is: ' + num + '.')
+}
+
+function clickListItem(model, e) {
+  const id = e.target.id
+  const choice = model.people.filter(person => person.id === id)[0]
+  document.querySelector('#result').textContent = choice.name
+  e.target.classList.add('selected')
+  setTimeout(() => {
+    e.target.classList.remove('selected')
+    document.querySelector('#result').textContent = ''
+  }, 500)
+}
+
+app({
+  model: {
+    people: [
+      {
+        id: '100',
+        name: 'Joe',
+        job: 'Mechanic'
+      },
+      {
+        id: '101',
+        name: 'Ellen',
+        job: 'Lab Technician'
+      },
+      {
+        id: '102',
+        name: 'Sam',
+        job: 'Developer'
+      }
+    ]
+  },
+  view: (model, msg) =>
+    html`
+      <section>
+        <h1>People</h1>
+        <h4>Swipe Right to Chose a Person</h4>
+        <p>
+          <button id='btn'>Click</button>
+        </p>
+        <ul id='list'>
+          ${model.people.map(person => html`<li id='${person.id}'>${person.name}</li>`)}
+        </ul>
+        <p>You chose: <span id='result'></span></p>
+      </section>
+    `,
+  subscriptions: [
+    (model, actions) => {
+      defineEvents([
+        {
+          element: '#btn',
+          event: 'click',
+          callback: saySomething.bind(this, model)
+        },
+        {
+          element: '#list',
+          targetEl: 'li',
+          event: 'click',
+          callback: clickListItem.bind(this, model)
+        }
+      ])
+      bindEvents(model, actions)
+    }
+  ]
+})
+```
