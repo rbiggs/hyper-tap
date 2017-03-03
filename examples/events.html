@@ -30,12 +30,16 @@
     <p>
       <button id='listEventBtn'>Remove List Events</button>
     </p>
+    <p id='triggerTarget'>
+      <button id='triggerBtn'>Trigger Event</button>
+    </p>
   </section>
   <script src="../dist/events.js"></script>
   <script>
     var defineEvents = events.defineEvents
     var bindEvents = events.bindEvents
     var unBindEvent = events.unBindEvent
+    var trigger = events.trigger
     var btn = document.querySelector('#btn');
 
     /**
@@ -81,6 +85,20 @@
         element: '#listEventBtn',
         callback: function() {
           unBindEvent('#list', 'click', listItemFnc)
+        }
+      },
+      {
+        event: 'swipeup',
+        element: '#triggerTarget',
+        callback: function(e) {
+          alert('Hello there, ' + e.data.name + '!')
+        }
+      },
+      {
+        event: 'tap',
+        element: '#triggerBtn',
+        callback: function() {
+          trigger('#triggerTarget', 'swipeup', {name: 'John Doe'})
         }
       }
     ])

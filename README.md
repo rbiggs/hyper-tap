@@ -90,7 +90,7 @@ Unbinding Events
 
 Gestures
 --------
-Hyper-tap offers the following gestures: `tap`, `dbltap`, `longtap`, `swipeup`, `swipedown`, `swipeleft`, `swiperight`. To use them up, just provide the gesture you want as the event type:
+Hyper-tap offers the following gestures: `tap`, `dbltap`, `longtap`, `swipeup`, `swipedown`, `swipeleft`, `swiperight`. To use them up, just provide the gesture you want as the event type. You can also delegate them like normal events as explained above:
 
 ```js
 defineEvents([
@@ -118,4 +118,22 @@ defineEvents([
 bindEvents()
 ```
 
-When done setting up your gestures, you must init them at load time with `enableGestures()`.
+Triggering Events
+-----------------
+
+You can trigger an event on an element. If you have that event registered, it will execute. You can also pass data with the triggered event, which you can capture as the `data` property of the registered event's callback event. See example below:
+
+```js
+// Define event:
+defineEvents([{
+  element: '#myBtn',
+  event: 'tap',
+  callback: function(e) {
+    alert('Hello, ' + e.data.name + '!')
+  }
+}])
+bindEvents()
+// Trigger event:
+trigger('#myBtn', 'tap', {name: 'Joe'})
+
+```

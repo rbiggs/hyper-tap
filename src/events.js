@@ -127,6 +127,7 @@ export function trigger(el, event, data) {
     console.error('No event was provided. You do need to provide one.')
     return;
   }
+  if (typeof el === 'string') el = document.querySelector(el)
   if (document.createEvent) {
     var evtObj = document.createEvent('Events')
     evtObj.initEvent(event, true, false)
