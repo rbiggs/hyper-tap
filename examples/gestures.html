@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="user-scalable=1.0">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="msapplication-tap-highlight" content="no">
@@ -39,16 +39,28 @@
       <li>Melon</li>
     </ul>
     <p>You chose: <span id="result"></span></p>
+    <p>
+      <button id='disableSwipeBtn'>Disable Swipe</button>
+    </p>
   </section>
   <script src="../dist/events.js"></script>
   <script>
     var defineEvents = events.defineEvents
     var bindEvents = events.bindEvents
-    var unbind = events.unbind
+    var unBindEvent = events.unBindEvent
 
     var tapResult = document.querySelector('#tap')
     var dblTapResult = document.querySelector('#dbltap')
     var longTapResult = document.querySelector('#longtap')
+
+    function swipeRightCb() {
+      result.textContent = this.textContent
+      var self = this
+      this.classList.add('selected')
+      setTimeout(function() {
+        self.classList.remove('selected')
+      }, 1000)
+    }
 
     defineEvents([{
         event: 'tap',
@@ -59,7 +71,8 @@
             tapResult.textContent = ''
           }, 1000)
         }
-      },{
+      },
+      {
         event: 'doubletap',
         element: '#btn2',
         callback: function() {
@@ -68,7 +81,8 @@
             dblTapResult.textContent = ''
           }, 1000)
         }
-      },{
+      },
+      {
         event: 'longtap',
         element: '#btn3',
         callback: function() {
@@ -82,16 +96,16 @@
         event: 'swiperight',
         element: '#list',
         targetEl: 'li',
-        callback: function() {
-          result.textContent = this.textContent
-          var self = this
-          this.classList.add('selected')
-          setTimeout(function() {
-            self.classList.remove('selected')
-          }, 1000)
-        }
+        callback: swipeRightCb
       },
-      ])
+      {
+        event: 'tap',
+        element: '#disableSwipeBtn',
+        callback: function() {
+          unBindEvent('#list', 'swiperight', swipeRightCb)
+        }
+      }
+    ])
     bindEvents()
   </script>
 </body>

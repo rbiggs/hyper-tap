@@ -18,7 +18,7 @@ export function defineEvents(options) {
 export function bindEvents(model, actions) {
 
   // Event delegator:
-  function delegate(element, event, targetEl, callback) {
+  function delegate(element, event, targetEl, callback, position) {
     var delegateEl
     if (!element) element = 'body'
     if (typeof element === 'string') {
@@ -39,10 +39,16 @@ export function bindEvents(model, actions) {
         }
       } while (target = target.parentNode)
     }
+    eventCache[position].delegatedCallback = callback
+    /**
+     * Since eventListener wraps the provided callback for event delegation, make it the callback in eventCache to enable unbinding.
+     */
+    eventCache[position].callback = eventListener
+    // And then bind eventListener as the callback:
     delegateEl.addEventListener(event, eventListener);
   }
 
-  eventCache.forEach(function(evt) {
+  eventCache.forEach(function(evt, idx) {
     var el
     if (typeof evt.element === 'string') {
       el = document.querySelector(evt.element)
@@ -50,23 +56,31 @@ export function bindEvents(model, actions) {
       el = document.querySelector('body')
     }
     if (evt.targetEl) {
-      delegate(evt.element, evt.event, evt.targetEl, evt.callback);
+      delegate(evt.element, evt.event, evt.targetEl, evt.callback, idx);
     } else {
       var callback = function(e) {
         evt.callback.call(el, e, model, actions);
       }
-      el.addEventListener(evt.event, callback);
+      el.addEventListener(evt.event, evt.callback);
     }
   })
 }
 
-export function unBindEvent(target, event, callback) {
+export function unBindEvent(element, event, callback) {
   if (eventCache && eventCache.length) {
-    var position = eventCache.findIndex(function(event) {
-      event.target === target
-    });
-    var element = document.querySelector(target)
-    element.removeEventListener(event, this[callback])
+    var position = -1
+    var clen = eventCache.length
+    for (var ci = 0; ci < clen; ci++) {
+      if (eventCache[ci].element === element && eventCache[ci].event === event && eventCache[ci].delegatedCallback && eventCache[ci].delegatedCallback === callback) {
+        position = ci
+      } else if (eventCache[ci].element === element && eventCache[ci].event === event && eventCache[ci].callback === callback) {
+        position = ci
+        break
+      }
+    }
+    if (position === -1) return;
+    var el = document.querySelector(element)
+    el.removeEventListener(eventCache[position].event, eventCache[position].callback)
     eventCache.splice(position, 1);
   }
 }
@@ -81,18 +95,6 @@ var eventStart = 'ontouchstart' in window && /mobile/img.test(navigator.userAgen
 var eventEnd = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchend' : 'click'
 var eventMove = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchmove' : 'mousemove'
 var eventCancel = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchcancel' : 'mouseout'
-
-
-//Ready event:
-function ready(callback) {
-  if (document.readyState !== 'loading') {
-    callback.call(callback)
-  } else {
-    document.addEventListener("DOMContentLoaded", function() {
-      return callback.call(callback)
-    })
-  }
-}
 
 // Delegate Events:
 function delegateTheEvent(options) {
@@ -120,9 +122,9 @@ function delegateTheEvent(options) {
 }
 
 // Fire gesture on element:
-function trigger(el, event, data) {
+export function trigger(el, event, data) {
   if (!event) {
-    console.error(errors.noEventToTrigger)
+    console.error('No event was provided. You do need to provide one.')
     return;
   }
   if (document.createEvent) {

@@ -16,6 +16,7 @@
     <p>
       <button id='btn'>Click This</button>
     </p>
+    <p><button id="stopEvent">Unbind Event</button></p>
     <h3>2. Event Delegation</h3>
     <h4>Choose a fruit by clicking on it:</h4>
     <ul id='list'>
@@ -26,30 +27,65 @@
       <li>Melon</li>
     </ul>
     <p>You chose: <span id="result"></span></p>
+    <p>
+      <button id='listEventBtn'>Remove List Events</button>
+    </p>
   </section>
   <script src="../dist/events.js"></script>
   <script>
     var defineEvents = events.defineEvents
     var bindEvents = events.bindEvents
-    var unbind = events.unbind
+    var unBindEvent = events.unBindEvent
     var btn = document.querySelector('#btn');
+
+    /**
+     * Define callbacks for events.
+     * Named events are required to be able to unbind them later.
+     * If you are sure you will never need to unbind an event,
+     * only then is it safe to use anonymous functions.
+     */
+    var clickAlert = function clickAlert(e) {
+      alert('Hello! You clicked?')
+    }
+    var listItemFnc = function listItemFnc() {
+      result.textContent = this.textContent
+      var self = this
+      this.classList.add('selected')
+      setTimeout(function() {
+        self.classList.remove('selected')
+      }, 1000)
+    }
+
+    // Define Events:
     defineEvents([
       {
         event: 'click',
         element: '#btn',
-        callback: function(e) {
-          alert('Hello! You clicked?')
+        callback: clickAlert
+      },
+      {
+        event: 'click',
+        element: '#stopEvent',
+        callback: function() {
+          unBindEvent('#btn', 'click', clickAlert)
         }
       },
       {
         event: 'click',
         element: '#list',
         targetEl: 'li',
+        callback: listItemFnc
+      },
+      {
+        event: 'click',
+        element: '#listEventBtn',
         callback: function() {
-          result.textContent = this.textContent
+          unBindEvent('#list', 'click', listItemFnc)
         }
       }
     ])
+
+    // Bind the events defined above:
     bindEvents()
   </script>
 </body>
