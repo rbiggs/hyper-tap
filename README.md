@@ -230,6 +230,6 @@ trigger('#myBtn', 'tap', {name: 'Joe'})
 About Designating Element for Event
 -----------------------------------
 
-It's always best to use a CSS selector that is specific to the element you wish to bind the event to. Using selectors that are generic like "p", "a", "div", "ul" can be problematic because there will probably be many instances of these in your app. Hyper-tap uses `document.querySelector` to convert a CSS selector into a node reference. This means it find the first occurence only. If you do really want to bind an event to a generic selector, look at using a delegated event. Bind the event to the parent and provide the generic selector as the target element:
+It's always best to use a CSS selector that is specific to the element you wish to bind the event to. Using selectors that are generic like "p", "a", "div", "ul" can be problematic because there will probably be many instances of these in your app. Hyper-tap uses `document.querySelector` to convert a CSS selector into a node reference. This means it finds the first occurence only. If you do really want to bind an event to a multpe instances of a selector, look at using a delegated event. Bind the event to the parent and provide the generic selector as the target element:
 
 
