@@ -82,11 +82,100 @@ Delegated Events
 ----------------
 Normally to register an event on an element, we use the `element` attribute. Notice that in the last example we also have a `targetEl`. This makes this event delegated. The event gets registered on the list, but the event only fires when the event target is a `li`. If we didn't provide the `targetEl` property, click on any list item would return the value of the whole list. Probably not what you would want. If a `targetEl` property is provided, but no `element` value, the event will be delegated to the body tag. Depending on how you app is constructed, this may or may not affect performance. If you have very deeply deeply nested elements, say 15 - 30 elements deep, there will be a noticeable delay from the time the event start to when the callback executes. As such, try to delegate events to a parent that is close to the target elements. If the immediate parent can be re-rendered at some point, you'd want to go a level higher. Why? Memory leaks. The gestures use normal event registration: `addEventListener` to register events and gestures. If you set up a delegate on an element that will get removed or replaced, you'll need to remove that event before this happens. To remove events, do the following:
 
+```js
+defineEvents([
+  {
+    element: '#list',
+    event: 'click',
+    // The element you want to capture the event:
+    targetEl: 'li',
+    callback: function() {
+      alert('You selected: ' + this.textContent)
+    }
+  }
+])
+```
+
+With the above example, we've registered the event on the list itself and told hyperapp to execute the callback when the event target is a list item. Doing so means that `this` in the callback will refer to the target element, not the parent element. Using this technique, we can add and delete list items without worrying about binding or unbinding events, or memory leaks. If you do intent to delete or replace the list at some time, you would in that case need to unbind the delegated event from it. See below for how to unbind events.
+
 
 Unbinding Events
 ----------------
+To unbind an event, you use the `unBindEvent` method. This takes three arguments:
 
-`unBindEvent(element, event, callback)`
+* element - can be a node or a CSS selector
+* event - an event: 'click', 'tap', etc.
+* callback - the named function used to register the event
+
+
+```js
+unBindEvent('#myBtn', 'tap', doSomething)
+```
+
+**ATTENTION:**
+
+If you intend to unbind an event at any time, you must define your event's callback using a named function instead of an anonymous one. Examine these two examples carefully:
+
+```js
+// Register event with anonymous callback:
+defineEvent([
+  {
+    element: '#btn',
+    event: 'tap',
+    callback: function() {
+      alert('Doing something!')
+    }
+  }
+])
+bindEvents()
+// Now try to unbind the above event:
+unbindEvent('#btn', 'tap', callback)
+/**
+ * The above event cannot be unbound because the callback is anonymous.
+ * To make an event unbindable, you must use a named function. Se next example:
+ */
+// Deine named function to use as callback:
+function doSomething() {
+  alert('Doing something!')
+}
+// Use named function in event definition:
+defineEvent([
+  {
+    element: '#btn',
+    event: 'tap',
+    callback: doSomething
+  }
+])
+bindEvents()
+
+// Now, using named function, you can successfully unbind the event:
+unbindEvent('#btn', 'tap', doSomething)
+
+```
+
+Unbinding Delegated Events
+--------------------------
+If you have a delegated event you wish to unbind, just pass in the same three values as above. You do not need to provide the target element, just the element the event is listening on:
+
+```js
+// Define named function for delegated event:
+function alertListItem() {
+  alert(this.textContent)
+}
+// Define an event for list items delegated to the parent list:
+defineEvents([
+  {
+    element: '#list',
+    event: 'dbltap',
+    targetEl: 'li',
+    callback: alertListItem
+  }
+])
+bindEvents()
+
+// Unbind delegated event, you don't need the targetEl value:
+unbindEvent('#list', 'dbltap', alertListItem)
+```
 
 Gestures
 --------
@@ -136,5 +225,11 @@ defineEvents([{
 bindEvents()
 // Trigger event:
 trigger('#myBtn', 'tap', {name: 'Joe'})
-
 ```
+
+About Designating Element for Event
+-----------------------------------
+
+It's always best to use a CSS selector that is specific to the element you wish to bind the event to. Using selectors that are generic like "p", "a", "div", "ul" can be problematic because there will probably be many instances of these in your app. Hyper-tap uses `document.querySelector` to convert a CSS selector into a node reference. This means it find the first occurence only. If you do really want to bind an event to a generic selector, look at using a delegated event. Bind the event to the parent and provide the generic selector as the target element:
+
+

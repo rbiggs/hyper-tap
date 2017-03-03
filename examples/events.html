@@ -38,7 +38,7 @@
   <script>
     var defineEvents = events.defineEvents
     var bindEvents = events.bindEvents
-    var unBindEvent = events.unBindEvent
+    var unbindEvent = events.unbindEvent
     var trigger = events.trigger
     var btn = document.querySelector('#btn');
 
@@ -71,7 +71,7 @@
         event: 'click',
         element: '#stopEvent',
         callback: function() {
-          unBindEvent('#btn', 'click', clickAlert)
+          unbindEvent('#btn', 'click', clickAlert)
         }
       },
       {
@@ -84,7 +84,7 @@
         event: 'click',
         element: '#listEventBtn',
         callback: function() {
-          unBindEvent('#list', 'click', listItemFnc)
+          unbindEvent('#list', 'click', listItemFnc)
         }
       },
       {

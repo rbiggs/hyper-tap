@@ -66,7 +66,7 @@ export function bindEvents(model, actions) {
   })
 }
 
-export function unBindEvent(element, event, callback) {
+export function unbindEvent(element, event, callback) {
   if (eventCache && eventCache.length) {
     var position = -1
     var clen = eventCache.length

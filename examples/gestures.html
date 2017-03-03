@@ -47,7 +47,7 @@
   <script>
     var defineEvents = events.defineEvents
     var bindEvents = events.bindEvents
-    var unBindEvent = events.unBindEvent
+    var unbindEvent = events.unbindEvent
 
     var tapResult = document.querySelector('#tap')
     var dblTapResult = document.querySelector('#dbltap')
@@ -102,7 +102,7 @@
         event: 'tap',
         element: '#disableSwipeBtn',
         callback: function() {
-          unBindEvent('#list', 'swiperight', swipeRightCb)
+          unbindEvent('#list', 'swiperight', swipeRightCb)
         }
       }
     ])
