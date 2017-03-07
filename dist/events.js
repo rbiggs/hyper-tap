@@ -1,2 +1,348 @@
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t(e.events=e.events||{})}(this,function(e){"use strict";function t(e){Array.isArray(e)?e.forEach(function(e){i.push(e)}):i.push({event:e.event,element:e.element,targetEl:e.targetEl,callback:e.callback})}function n(e,t){function n(n,o,a,r,l){var c;n||(n="body"),"string"==typeof n?c=document.querySelector(n):n.nodeName&&(c=n);var u=function(n){var o=n.target,i=Array.prototype.slice.apply(c.querySelectorAll(a));do for(var l=i.length,u=0;u<l;u++)if(o===i[u]){r.call(i[u],n,e,t);break}while(o=o.parentNode)};i[l].delegatedCallback=r,i[l].callback=u,c.addEventListener(o,u)}i.forEach(function(e,t){var o;if(o="string"==typeof e.element?document.querySelector(e.element):document.querySelector("body"),e.targetEl)n(e.element,e.event,e.targetEl,e.callback,t);else{o.addEventListener(e.event,e.callback)}})}function o(e,t,n){if(i&&i.length){for(var o=-1,a=i.length,r=0;r<a;r++)if(i[r].element===e&&i[r].event===t&&i[r].delegatedCallback&&i[r].delegatedCallback===n)o=r;else if(i[r].element===e&&i[r].event===t&&i[r].callback===n){o=r;break}if(o===-1)return;document.querySelector(e).removeEventListener(i[o].event,i[o].callback),i.splice(o,1)}}function a(e,t,n){if(!t)return void console.error("No event was provided. You do need to provide one.");if("string"==typeof e&&(e=document.querySelector(e)),document.createEvent){var o=document.createEvent("Events");o.initEvent(t,!0,!1),o.data=n,e.dispatchEvent(o)}}var i=[],r="ontouchstart"in window&&/mobile/gim.test(navigator.userAgent)?"touchstart":"mousedown",l="ontouchstart"in window&&/mobile/gim.test(navigator.userAgent)?"touchend":"click",c="ontouchstart"in window&&/mobile/gim.test(navigator.userAgent)?"touchmove":"mousemove";"ontouchstart"in window&&/mobile/gim.test(navigator.userAgent);(function(){function e(e){return"tagName"in e?e:e.parentNode}function t(e,t,n,o){return Math.abs(e-t)>=Math.abs(n-o)?e-t>0?"left":"right":n-o>0?"up":"down"}function n(){if(f=null,g.last)try{g&&g.el&&(a(g.el,"longtap"),g={})}catch(e){}}function o(){f&&clearTimeout(f),f=null}function i(){u&&clearTimeout(u),d&&clearTimeout(d),s&&clearTimeout(s),f&&clearTimeout(f),u=d=s=f=null,g={}}var u,s,d,g={},v=150;/android/gim.test(navigator.userAgent)&&(v=200);var f;!function(){var m,p,h=document.body,b=!1;h.addEventListener(r,function(t){if(m=Date.now(),p=m-(g.last||m),t.originalEvent&&(t=t.originalEvent),"mousedown"===r)g.el=e(t.target),"ripple"===t.target.nodeName&&(g.el=el.target.parentNode),u&&clearTimeout(u),g.x1=t.pageX,g.y1=t.pageY,b=!1;else if(1===t.touches.length){if(t.target.disabled)return;g.el=e(t.touches[0].target),u&&clearTimeout(u),g.x1=t.touches[0].pageX,g.y1=t.touches[0].pageY,b=2===t.targetTouches.length}p>0&&p<=450&&(g.isDoubleTap=!0),g.last=m,f=setTimeout(n,750)}),h.addEventListener(c,function(e){e.originalEvent&&(e=e.originalEvent),o(),"mousemove"===c?(g.x2=e.pageX,g.y2=e.pageY):1===e.touches.length&&(g.x2=e.touches[0].pageX,g.y2=e.touches[0].pageY,g.move=!0)}),h.addEventListener(l,function(e){o(),g.el&&(g.x2&&Math.abs(g.x1-g.x2)>20||g.y2&&Math.abs(g.y1-g.y2)>20?s=setTimeout(function(){g&&g.el&&(a(g.el,"swipe"),a(g.el,"swipe"+t(g.x1,g.x2,g.y1,g.y2)),g={})},0):"last"in g&&(d=setTimeout(function(){g&&g.isDoubleTap?g&&g.el&&(a(g.el,"doubletap"),e.preventDefault(),g={}):u=setTimeout(function(){u=null,g&&g.el&&!g.move?(a(g.el,"tap"),g={}):i()},v)},0)))}),h.addEventListener("touchcancel",i)}()})(),e.defineEvents=t,e.bindEvents=n,e.unbindEvent=o,e.trigger=a});
-//# sourceMappingURL=events.js.map
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.events = global.events || {})));
+}(this, (function (exports) { 'use strict';
+
+var eventCache = [];
+window.eventCache = eventCache;
+
+function defineEvents(options) {
+  if (Array.isArray(options)) {
+    options.forEach(function(event) {
+      eventCache.push(event);
+    });
+  } else {
+    eventCache.push({
+      event: options.event,
+      element: options.element,
+      targetEl: options.targetEl,
+      callback: options.callback
+    });
+  }
+}
+
+function bindEvents(model, actions) {
+
+  // Event delegator:
+  function delegate(element, event, targetEl, callback, position) {
+    var delegateEl;
+    if (!element) element = 'body';
+    if (typeof element === 'string') {
+      delegateEl = document.querySelector(element);
+    } else if (element.nodeName) {
+      delegateEl = element;
+    }
+    var eventListener = function(e) {
+      var target = e.target;
+      var elements = Array.prototype.slice.apply(delegateEl.querySelectorAll(targetEl));
+      do {
+        var len = elements.length;
+        for (var i = 0; i < len; i++) {
+          if (target === elements[i]) {
+            callback.call(elements[i], e, model, actions);
+            break
+          }
+        }
+      } while (target = target.parentNode)
+    };
+    eventCache[position].delegatedCallback = callback;
+    /**
+     * Since eventListener wraps the provided callback for event delegation, make it the callback in eventCache to enable unbinding.
+     */
+    eventCache[position].callback = eventListener;
+    // And then bind eventListener as the callback:
+    delegateEl.addEventListener(event, eventListener);
+  }
+
+  eventCache.forEach(function(evt, idx) {
+    var el;
+    if (typeof evt.element === 'string') {
+      el = document.querySelector(evt.element);
+    } else {
+      el = document.querySelector('body');
+    }
+    if (evt.targetEl) {
+      delegate(evt.element, evt.event, evt.targetEl, evt.callback, idx);
+    } else {
+      var callback = function(e) {
+        evt.callback.call(el, e, model, actions);
+      };
+      el.addEventListener(evt.event, evt.callback);
+    }
+  });
+}
+
+function unbindEvent(element, event, callback) {
+  var el;
+  if (typeof element === 'string') {
+    el = document.querySelector(element);
+  } else if (element && element.nodeName) {
+    el = element;
+  } else {
+    return
+  }
+  if (!event) {
+    var clen = eventCache.length;
+    if (clen < 1) return
+    for (var ci = clen; ci > 0; ci--) {
+      if (eventCache[ci] && eventCache[ci].element === element) {
+        el.removeEventListener(eventCache[ci].event, eventCache[ci].callback);
+        eventCache.splice(ci, 1);
+      }
+    }
+  } else if (event && !callback) {
+    var position = -1;
+    var clen = eventCache.length;
+    for (var ci = 0; ci < clen; ci++) {
+      if (eventCache[ci] && eventCache[ci].element === element && eventCache[ci].event === event) {
+        try {
+          el.removeEventListener(eventCache[ci].event, eventCache[ci].callback);
+          eventCache.splice(parseInt(ci, 10),1);
+        } catch(err) {}
+      }
+    }
+  } else if (element && event && callback) {
+    var position = -1;
+    var clen = eventCache.length;
+    for (var ci = 0; ci < clen; ci++) {
+      if (eventCache[ci].element === element && eventCache[ci].event === event && eventCache[ci].delegatedCallback && eventCache[ci].delegatedCallback === callback) {
+        position = ci;
+      } else if (eventCache[ci].element === element && eventCache[ci].event === event && eventCache[ci].callback === callback) {
+        position = ci;
+        break
+      }
+    }
+    if (position === -1) return
+    el.removeEventListener(eventCache[position].event, eventCache[position].callback);
+    eventCache.splice(position, 1);
+  } else {
+    return
+  }
+}
+
+//////////////////////////////
+// GESTURES:
+//////////////////////////////
+/**
+ * Event aliases for desktop and mobile:
+ */
+var eventStart = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchstart' : 'mousedown';
+var eventEnd = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchend' : 'click';
+var eventMove = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchmove' : 'mousemove';
+var eventCancel = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchcancel' : 'mouseout';
+
+// Fire gesture on element:
+function trigger(el, event, data) {
+  if (!event) {
+    console.error('No event was provided. You do need to provide one.');
+    return
+  }
+  if (typeof el === 'string') el = document.querySelector(el);
+  if (document.createEvent) {
+    var evtObj = document.createEvent('Events');
+    evtObj.initEvent(event, true, false);
+    evtObj.data = data;
+    el.dispatchEvent(evtObj);
+  }
+}
+
+var enableGestures = function() {
+  var touch = {};
+  var touchTimeout;
+  var swipeTimeout;
+  var tapTimeout;
+  var longTapDelay = 750;
+  var singleTapDelay = 150;
+  var gestureLength = 20;
+  if (/android/img.test(navigator.userAgent)) singleTapDelay = 200;
+  var longTapTimeout;
+
+  function parentIfText(node) {
+    return 'tagName' in node ? node : node.parentNode
+  }
+
+  function swipeDirection(x1, x2, y1, y2) {
+    return Math.abs(x1 - x2) >=
+      Math.abs(y1 - y2) ? (x1 - x2 > 0 ? 'left' : 'right') : (y1 - y2 > 0 ? 'up' : 'down')
+  }
+
+  function longTap() {
+    longTapTimeout = null;
+    if (touch.last) {
+      try {
+        if (touch && touch.el) {
+          trigger(touch.el, 'longtap');
+          touch = {};
+        }
+      } catch (err) {}
+    }
+  }
+
+  function cancelLongTap() {
+    if (longTapTimeout) clearTimeout(longTapTimeout);
+    longTapTimeout = null;
+  }
+
+  function cancelAll() {
+    if (touchTimeout) clearTimeout(touchTimeout);
+    if (tapTimeout) clearTimeout(tapTimeout);
+    if (swipeTimeout) clearTimeout(swipeTimeout);
+    if (longTapTimeout) clearTimeout(longTapTimeout);
+    touchTimeout = tapTimeout = swipeTimeout = longTapTimeout = null;
+    touch = {};
+  }
+
+  /**
+   * Execute this after DOM loads:
+   */
+  (function() {
+    var now;
+    var delta;
+    var body = document.body;
+    var twoTouches = false;
+
+    /**
+     * Capture start of event:
+     */
+    body.addEventListener(eventStart, function(e) {
+      now = Date.now();
+      delta = now - (touch.last || now);
+      if (e.originalEvent) e = e.originalEvent;
+
+      if (eventStart === 'mousedown') {
+        touch.el = parentIfText(e.target);
+        if (e.target.nodeName === 'ripple') {
+          touch.el = el.target.parentNode;
+        }
+        touchTimeout && clearTimeout(touchTimeout);
+        touch.x1 = e.pageX;
+        touch.y1 = e.pageY;
+        twoTouches = false;
+
+      /**
+       * Detect two or more finger gestures:
+       */
+      } else {
+        if (e.touches.length === 1) {
+          if (!!e.target.disabled) return
+          touch.el = parentIfText(e.touches[0].target);
+          touchTimeout && clearTimeout(touchTimeout);
+          touch.x1 = e.touches[0].pageX;
+          touch.y1 = e.touches[0].pageY;
+          if (e.targetTouches.length === 2) {
+            twoTouches = true;
+          } else {
+            twoTouches = false;
+          }
+        }
+      }
+
+      if (delta > 0 && delta <= 450) {
+        touch.isDoubleTap = true;
+      }
+      touch.last = now;
+      longTapTimeout = setTimeout(longTap, longTapDelay);
+    });
+
+    /**
+     * Capture event move:
+     */
+    body.addEventListener(eventMove, function(e) {
+      if (e.originalEvent) e = e.originalEvent;
+      cancelLongTap();
+      if (eventMove === 'mousemove') {
+        touch.x2 = e.pageX;
+        touch.y2 = e.pageY;
+      } else {
+        /**
+         * One finger gesture:
+         */
+        if (e.touches.length === 1) {
+          touch.x2 = e.touches[0].pageX;
+          touch.y2 = e.touches[0].pageY;
+          touch.move = true;
+        }
+      }
+    });
+
+    /**
+     * Capture event end:
+     */
+    body.addEventListener(eventEnd, function(e) {
+
+      cancelLongTap();
+      if (!!touch.el) {
+        /**
+         * Swipe detection:
+         */
+        if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > gestureLength) ||
+          (touch.y2 && Math.abs(touch.y1 - touch.y2) > gestureLength)) {
+          swipeTimeout = setTimeout(function() {
+            if (touch && touch.el) {
+              trigger(touch.el, 'swipe');
+              trigger(touch.el, 'swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)));
+              touch = {};
+            }
+          }, 0);
+
+        /**
+         * Normal tap:
+         */
+        } else if ('last' in touch) {
+          /**
+           * Delay by one tick so we can cancel the 'tap' event if 'scroll' fires:
+           */
+          tapTimeout = setTimeout(function() {
+            /**
+             * Trigger double tap immediately:
+             */
+            if (touch && touch.isDoubleTap) {
+              if (touch && touch.el) {
+                trigger(touch.el, 'doubletap');
+                e.preventDefault();
+                touch = {};
+              }
+
+            } else {
+              /**
+               * Trigger tap after singleTapDelay:
+               */
+              touchTimeout = setTimeout(function() {
+                touchTimeout = null;
+                if (touch && touch.el && !touch.move) {
+                  trigger(touch.el, 'tap');
+                  touch = {};
+
+                } else {
+                  /**
+                   * Touch moved so cancel tap:
+                   */
+                  cancelAll();
+                }
+              }, singleTapDelay);
+            }
+          }, 0);
+        }
+
+      } else {
+        return
+      }
+    });
+    body.addEventListener('touchcancel', cancelAll);
+  })();
+};
+enableGestures();
+
+exports.defineEvents = defineEvents;
+exports.bindEvents = bindEvents;
+exports.unbindEvent = unbindEvent;
+exports.eventStart = eventStart;
+exports.eventEnd = eventEnd;
+exports.eventMove = eventMove;
+exports.eventCancel = eventCancel;
+exports.trigger = trigger;
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+})));

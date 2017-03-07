@@ -7,8 +7,11 @@
     "example": "example"
   },
   "scripts": {
-    "test": "",
-    "build": "rollup -cm -n events -f umd -i src/events.js -o dist/events.js"
+    "event-aliases-test": "phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js './tests-browser/13-event-aliases.html'",
+    "events-test": "phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js './tests-browser/12-events.html'",
+    "gestures-test": "phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js './tests-browser/14-gestures.html'",
+    "test": "npm run event-aliases-test && npm run events-test && npm run gestures-test",
+    "build": "rollup -n events -f umd -i src/events.js -o dist/events.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +35,10 @@
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.22.0",
+    "chai": "*",
+    "mocha": "*",
+    "mocha-phantomjs-core": "^2.1.1",
+    "phantomjs": "^2.1.7",
     "rollup": "^0.41.4",
     "rollup-plugin-uglify": "^1.0.1"
   }

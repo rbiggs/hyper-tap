@@ -1,4 +1,5 @@
 var eventCache = []
+window.eventCache = eventCache
 
 export function defineEvents(options) {
   if (Array.isArray(options)) {
@@ -45,7 +46,7 @@ export function bindEvents(model, actions) {
      */
     eventCache[position].callback = eventListener
     // And then bind eventListener as the callback:
-    delegateEl.addEventListener(event, eventListener);
+    delegateEl.addEventListener(event, eventListener)
   }
 
   eventCache.forEach(function(evt, idx) {
@@ -56,18 +57,46 @@ export function bindEvents(model, actions) {
       el = document.querySelector('body')
     }
     if (evt.targetEl) {
-      delegate(evt.element, evt.event, evt.targetEl, evt.callback, idx);
+      delegate(evt.element, evt.event, evt.targetEl, evt.callback, idx)
     } else {
       var callback = function(e) {
-        evt.callback.call(el, e, model, actions);
+        evt.callback.call(el, e, model, actions)
       }
-      el.addEventListener(evt.event, evt.callback);
+      el.addEventListener(evt.event, evt.callback)
     }
   })
 }
 
 export function unbindEvent(element, event, callback) {
-  if (eventCache && eventCache.length) {
+  var el
+  if (typeof element === 'string') {
+    el = document.querySelector(element)
+  } else if (element && element.nodeName) {
+    el = element
+  } else {
+    return
+  }
+  if (!event) {
+    var clen = eventCache.length
+    if (clen < 1) return
+    for (var ci = clen; ci > 0; ci--) {
+      if (eventCache[ci] && eventCache[ci].element === element) {
+        el.removeEventListener(eventCache[ci].event, eventCache[ci].callback)
+        eventCache.splice(ci, 1)
+      }
+    }
+  } else if (event && !callback) {
+    var position = -1
+    var clen = eventCache.length
+    for (var ci = 0; ci < clen; ci++) {
+      if (eventCache[ci] && eventCache[ci].element === element && eventCache[ci].event === event) {
+        try {
+          el.removeEventListener(eventCache[ci].event, eventCache[ci].callback)
+          eventCache.splice(parseInt(ci, 10),1)
+        } catch(err) {}
+      }
+    }
+  } else if (element && event && callback) {
     var position = -1
     var clen = eventCache.length
     for (var ci = 0; ci < clen; ci++) {
@@ -78,10 +107,11 @@ export function unbindEvent(element, event, callback) {
         break
       }
     }
-    if (position === -1) return;
-    var el = document.querySelector(element)
+    if (position === -1) return
     el.removeEventListener(eventCache[position].event, eventCache[position].callback)
-    eventCache.splice(position, 1);
+    eventCache.splice(position, 1)
+  } else {
+    return
   }
 }
 
@@ -91,10 +121,10 @@ export function unbindEvent(element, event, callback) {
 /**
  * Event aliases for desktop and mobile:
  */
-var eventStart = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchstart' : 'mousedown'
-var eventEnd = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchend' : 'click'
-var eventMove = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchmove' : 'mousemove'
-var eventCancel = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchcancel' : 'mouseout'
+export var eventStart = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchstart' : 'mousedown'
+export var eventEnd = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchend' : 'click'
+export var eventMove = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchmove' : 'mousemove'
+export var eventCancel = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchcancel' : 'mouseout'
 
 // Delegate Events:
 function delegateTheEvent(options) {
@@ -125,7 +155,7 @@ function delegateTheEvent(options) {
 export function trigger(el, event, data) {
   if (!event) {
     console.error('No event was provided. You do need to provide one.')
-    return;
+    return
   }
   if (typeof el === 'string') el = document.querySelector(el)
   if (document.createEvent) {
@@ -157,7 +187,7 @@ var enableGestures = function() {
   }
 
   function longTap() {
-    longTapTimeout = null;
+    longTapTimeout = null
     if (touch.last) {
       try {
         if (touch && touch.el) {
@@ -232,7 +262,7 @@ var enableGestures = function() {
       }
       touch.last = now
       longTapTimeout = setTimeout(longTap, longTapDelay)
-    });
+    })
 
     /**
      * Capture event move:
@@ -253,7 +283,7 @@ var enableGestures = function() {
           touch.move = true
         }
       }
-    });
+    })
 
     /**
      * Capture event end:
@@ -273,7 +303,7 @@ var enableGestures = function() {
               trigger(touch.el, 'swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
               touch = {}
             }
-          }, 0);
+          }, 0)
 
         /**
          * Normal tap:
@@ -289,7 +319,7 @@ var enableGestures = function() {
             if (touch && touch.isDoubleTap) {
               if (touch && touch.el) {
                 trigger(touch.el, 'doubletap')
-                e.preventDefault();
+                e.preventDefault()
                 touch = {}
               }
 
@@ -317,7 +347,7 @@ var enableGestures = function() {
       } else {
         return
       }
-    });
+    })
     body.addEventListener('touchcancel', cancelAll)
   })()
 }
