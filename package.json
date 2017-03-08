@@ -11,7 +11,7 @@
     "events-test": "phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js './tests-browser/2-events.html'",
     "gestures-test": "phantomjs ./node_modules/mocha-phantomjs-core/mocha-phantomjs-core.js './tests-browser/3-gestures.html'",
     "test": "npm run event-aliases-test && npm run events-test && npm run gestures-test",
-    "build": "rollup -n events -f umd -i src/events.js -o dist/events.js"
+    "build": "rollup -cm -n events -f umd -i src/events.js -o dist/events.js"
   },
   "repository": {
     "type": "git",
