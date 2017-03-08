@@ -33,7 +33,6 @@ Hyper-tap has three global functions:
 * bindEvents - Execute to init events at load time
 * unBindEvent - Use to unbind an event
 * trigger - Trigger an event on a designated element
-* enableGestures - Execute at page load to enable gestures
 
 Setting Up Events
 -----------------
