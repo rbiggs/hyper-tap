@@ -9,12 +9,6 @@
 
 describe("Events Tests", function () {
 
-  delay = function(milliseconds) {
-    return new Promise(function (resolve, reject) {
-      setTimeout(resolve, milliseconds)
-    })
-  }
-
   it('events.defineEvents([{element:element, event:event, callback:callback}]) should register event on element.', function () {
     var check1 = undefined
     /* Register tap */
@@ -42,10 +36,10 @@ describe("Events Tests", function () {
     // Fire first event again
     check1 = undefined
     trigger('#testBtn1', 'tap')
-    delay(100).then(function() {
+    setTimeout(function() {
       expect(check1).to.equal('Test Button 1')
       expect(check2).to.equal('This event start thingie works!')
-    })
+    },100)
   })
 
   it('Should be able to register multiple events of same type on same element.', function() {
@@ -68,10 +62,10 @@ describe("Events Tests", function () {
     }])
     bindEvents()
     trigger('#testBtn2', 'tap')
-    delay(100).then(function() {
+    setTimeout(function() {
       expect(check1).to.equal('From first tap event.')
       expect(check2).to.equal('From second tap event.')
-    })
+    },100)
   })
 
   it('Shoud be able to register different types of events on same element.', function() {
