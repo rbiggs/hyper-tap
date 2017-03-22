@@ -232,7 +232,7 @@ var enableGestures = function() {
       if (eventStart === 'mousedown') {
         touch.el = parentIfText(e.target)
         if (e.target.nodeName === 'ripple') {
-          touch.el = el.target.parentNode
+          touch.el = e.target.parentNode
         }
         touchTimeout && clearTimeout(touchTimeout)
         touch.x1 = e.pageX
