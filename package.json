@@ -1,6 +1,6 @@
 {
   "name": "hyper-tap",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "An events and gesture library for frameworks that use inline events.",
   "main": "index.js",
   "directories": {
