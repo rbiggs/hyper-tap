@@ -121,10 +121,34 @@ export function unbindEvent(element, event, callback) {
 /**
  * Event aliases for desktop and mobile:
  */
-export var eventStart = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchstart' : 'mousedown'
-export var eventEnd = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchend' : 'click'
-export var eventMove = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchmove' : 'mousemove'
-export var eventCancel = 'ontouchstart' in window && /mobile/img.test(navigator.userAgent) ? 'touchcancel' : 'mouseout'
+let eventStart, eventEnd, eventMove, eventCancel
+
+// Pointer events for IE11 and MSEdge:
+if (window.navigator.pointerEnabled) {
+  eventStart = 'pointerdown';
+  eventEnd = 'pointerup';
+  eventMove = 'pointermove';
+  eventCancel = 'pointercancel';
+// Pointer events for IE10 and WP8:
+} else if (window.navigator.msPointerEnabled) {
+  eventStart = 'MSPointerDown';
+  eventEnd = 'MSPointerUp';
+  eventMove = 'MSPointerMove';
+  eventCancel = 'MSPointerCancel';
+// Touch events for iOS & Android:
+} else if ('ontouchstart' in window) {
+  eventStart = 'touchstart';
+  eventEnd = 'touchend';
+  eventMove = 'touchmove';
+  eventCancel = 'touchcancel';
+// Mouse events for desktop:
+} else {
+  eventStart = 'mousedown';
+  eventEnd = 'click';
+  eventMove = 'mousemove';
+  eventCancel = 'mouseout';
+}
+export {eventStart, eventEnd, eventMove, eventCancel}
 
 // Delegate Events:
 function delegateTheEvent(options) {

@@ -5,7 +5,8 @@ describe("Event Aliases Tests", function () {
   $.eventMove = touchmove || mousemove
   $.eventCancel = touchcancel || mouseout
   */
-  var isDesktop = (!/mobile/img.test(navigator.userAgent))
+  var isDesktop = (!'ontouchstart' in window)
+  var isMobile = (/mobile/img.test(navigator.userAgent))
   var eventStart = events.eventStart
   var eventEnd = events.eventEnd
   var eventMove = events.eventMove
